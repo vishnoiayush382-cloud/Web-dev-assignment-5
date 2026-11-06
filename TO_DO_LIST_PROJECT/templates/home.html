@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page</title>
+    <link rel="stylesheet" href="{% static "home.css" %}">
+</head>
+<body>
+    <div class="parent_section">
+        {% include "navbar.html" %}
+
+        <div class="Task_bar">
+            <h1>All Tasks</h1>
+            <table>
+                <tr class="tbl_clmn">
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Done</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+                {% for data in tasks %}
+                <tr>
+                    <td>{{ data.title }}</td>
+                    <td>{{ data.description }}</td>
+                    <td>
+                        <form action="{% url "update_task" data.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="checkbox" {% if data.done %}checked{% endif %} value="True" onchange='this.form.submit()' name='done'>
+                        </form>
+                    </td>
+                    <td>
+                        {% if data.done %}
+                        Task Done
+                        {% else %}
+                        Task Incomplete
+                        {% endif %}
+                    </td>
+                    <td class="edt_dlt_btn">
+                        <a href="{% url "edit_task" data.id %}" class="edit_btn">
+                            Edit
+                        </a>
+
+                        <a href="{% url "delete_task" data.id %}" class="dlt_btn">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td>No Tasks Yet</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>
